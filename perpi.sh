@@ -116,7 +116,7 @@ tones=(
 toneCount=${#tones[@]}
 
 # totalQuestions=100
-totalQuestions=5
+totalQuestions=$toneCount
 
 # fill the question list with the tones list multiple times, until we pass
 # the total question count to get a list with "at least" enough items for the
@@ -138,23 +138,13 @@ getNextQuestion() {
   questionList=( "${questionList[@]}" )
 }
 
-# for i in $(seq 1 $totalQuestions); do
-#   getNextQuestion
-#   echo "N: $Q_FREQUENCY $Q_NAME"
-# done
-
-# echo questionListSize=${#questionList[@]}
-# echo "ql:${questionList[@]}"
-
-
 triesPerQuestion=()
+
+# START
+echo "Guess the tones for the following $totalQuestions questions:"
 
 for i in $(seq 1 $totalQuestions); do
   getNextQuestion
-  # echo "N: $Q_FREQUENCY $Q_NAME"
-  # randomTone=${tones[RANDOM%$toneCount]}
-  # frequency="${randomTone%:*}"
-  # name="${randomTone#*:}"
   guesses=()
 
   unset guess
@@ -177,7 +167,6 @@ for i in $(seq 1 $totalQuestions); do
   done
 done
 
-# triesPerQuestion=(1 5 3 2 1)
 questionCount=${#triesPerQuestion[@]}
 declare -i wrong
 declare -i total
@@ -193,6 +182,6 @@ rnd() { LC_NUMERIC=C printf "%.2f\n" $@; }
 
 
 # printf "%.2f" $percent
-echo "Got $(rnd $percent)% correct with $wrong wrong answers."
+echo "Got $(($questionCount - $wrong))/$questionCount or $(rnd $percent)% correct with $wrong wrong answers."
 
 echo "Average tries:$(rnd $(bc -l <<< "$total / $questionCount")) (${triesPerQuestion[@]})"
